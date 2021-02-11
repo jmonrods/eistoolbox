@@ -21,7 +21,7 @@ Run 'eistoolbox.m' to start the main program!
 ### Input file formats
 
 - CSV files must have three columns: FREQ,REAL,IMAG
-- DTA files are from Gamry Instruments (tested Gamry 1000 Interface)
+- DTA files are from Gamry Instruments (tested with Gamry 1000 Interface)
 
 ### Circuit string formats
 
@@ -33,23 +33,19 @@ At the moment, circuits can be written according to the Zfit specification:
 
 -Careful! Do not treat elements as labels (i.e. R1, R2, R3... is incorrect.) The correct way is R1, R1 and R1.
 
--ToDo: Click the "load" button next to the fit string to load some predefined circuit examples.
-
--Read the source of the file Zfit.m for full documentation about circuit string formatting.
+-Click the "load" button next to the fit string to load some predefined circuit examples.
 
 ## External libraries used in this toolbox
-
-export_fig by Yair Altman is found [here](https://github.com/altmany/export_fig)
 
 fminsearchbnd by John D'Errico is found [here](http://de.mathworks.com/matlabcentral/fileexchange/8277-fminsearchbnd--fminsearchcon).
 
 Zfit is from Jean-Luc Dellis, [available here](https://www.mathworks.com/matlabcentral/fileexchange/19460-zfit).
 
-More fitting functions will be available in the future (such as Levenberg-Marquardt, Nelder-Mead, BFGS, Powell). If you have more algorithm suggestions, let me know.
+The default algorithm is Nelder-Mead (from fminsearchbnd). The other algorithms included in the drop-down menu are experimental, don't trust their results yet. If you have more algorithm suggestions, let me know.
 
 ## License
 
-Copyright (C) 2016  Juan J. Montero-Rodriguez
+Copyright (C) 2016-2021  Juan J. Montero-Rodriguez
  
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, in the version 3.
 
@@ -78,11 +74,7 @@ You should have received a copy of the GNU General Public License along with thi
 
 ## Planned for future releases
 
-- [ ] Algorithms: Levenberg-Marquardt
-- [ ] Algorithms: Nelder-Mead
-- [ ] Algorithms: BFGS
-- [ ] Algorithms: Powell
 - [ ] Algorithms: Other algorithms
 - [ ] Compute the Kramers-Kronig test
 
-If you have comments or suggestions, [send me an e-mail](mailto:juan.montero@tu-harburg.de)
+If you have comments or suggestions, [send me an e-mail](mailto:jjmontero@itcr.ac.cr)
