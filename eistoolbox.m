@@ -43,6 +43,12 @@ addpath(fp);    % add all subfolders to current path
 % Update handles structure
 guidata(hObject, handles);
 
+% Read checkboxes and initialize values on the handles
+inverty1 = get(handles.checkbox_inverty1, 'Value');
+setappdata(handles.eismain,'inverty1',inverty1);
+inverty2 = get(handles.checkbox_inverty2, 'Value');
+setappdata(handles.eismain,'inverty2',inverty2);
+
 function varargout = eistoolbox_OutputFcn(hObject, eventdata, handles) 
 varargout{1} = handles.output;  % output handles to command line
 
@@ -179,6 +185,14 @@ plotreim1(hObject, eventdata, handles);
 function btn_reim2_Callback(hObject, eventdata, handles)
 plotreim2(hObject, eventdata, handles);
 
+function checkbox_inverty1_Callback(hObject, eventdata, handles)
+inverty1 = get(handles.checkbox_inverty1, 'Value');
+setappdata(handles.eismain,'inverty1',inverty1);
+
+function checkbox_inverty2_Callback(hObject, eventdata, handles)
+inverty2 = get(handles.checkbox_inverty2, 'Value');
+setappdata(handles.eismain,'inverty2',inverty2);
+
 function btn_openparams_Callback(hObject, eventdata, handles)
 show_resultstable(hObject, eventdata, handles);
 
@@ -216,33 +230,6 @@ end
 for idx=1:length(zbest)
     csvwrite([filePath '/Fitted_' num2str(idx) '.csv'],[data{1}(:,1) zbest{idx}]);
 end
-
-function save1_Callback(hObject, eventdata, handles)
-[fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'; 
-    '*.png','Portable Networks Graphic (*.png)';
-    '*.jpg','JPEG (*.jpg)'});
-if isequal(fileName,0)
-   disp('Info: No file was selected');
-   return;  % terminate the callback here
-end
-
-fullfname = fullfile(filePath,fileName);
-%ToDo: check if Figure 1 exists, if not, show a message
-ch = figure(1);
-export_fig(ch, fullfname);
-
-
-function save2_Callback(hObject, eventdata, handles)
-[fileName,filePath] = uiputfile({'*.pdf','PDF file (*.pdf)'});
-if isequal(fileName,0)
-   disp('Info: No file was selected');
-   return;  % terminate the callback here
-end
-
-fullfname = fullfile(filePath,fileName);
-%ToDo: check if Figure 2 exists, if not, show a message
-ch = figure(2);
-export_fig(ch, fullfname);
 
 % MENUS -------------------------------------------------------------------
 function menu_file_Callback(hObject, eventdata, handles)
@@ -473,6 +460,7 @@ function remove_lastN(hObject, eventdata, handles, N)
 function plotnyq(hObject, eventdata, handles)
 % plots input data as Nyquist
     data=getappdata(handles.eismain,'data');
+    inverty1=getappdata(handles.eismain,'inverty1');
 
     if isempty(data)
         disp('Error: there is NO input data selected yet. Add some files first!');
@@ -489,12 +477,15 @@ function plotnyq(hObject, eventdata, handles)
     clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
+    if(inverty1==1)
+        set(gca, 'YDir','reverse');
+    end
     hold on;
     grid on;
 
     cm=colormap(hsv(length(data))); % define a colormap
     for idx=1:length(data)
-        plot(data{idx}(:,2),abs(data{idx}(:,3)),...
+        plot(data{idx}(:,2),data{idx}(:,3),...
             'color',0.8*cm(idx,:),...
             'marker','.',...
             'markersize',5);
@@ -554,7 +545,8 @@ function plotbod(hObject, eventdata, handles)
 function plotnyq2(hObject, eventdata, handles)
 % plots input data as Nyquist
     zbest=getappdata(handles.eismain,'zbest');
-
+    inverty2=getappdata(handles.eismain,'inverty2');
+    
     if isempty(zbest)
         set(handles.txt_savestatus,'string','Error: NO fitted data');
         disp('Error: there is NO fitted data selected yet. Fit some data first!');
@@ -570,12 +562,15 @@ function plotnyq2(hObject, eventdata, handles)
     clf;  % Clears any old information already present in the diagram
     set(gca,'FontSize',7);
     set(gca,'xscale','linear');    % change x axis to linear
+    if(inverty2)
+        set(gca, 'YDir','reverse');
+    end
     hold on;
     grid on;
     
     cm=colormap(hsv(length(zbest))); % define a colormap
     for idx=1:length(zbest)
-        plot(zbest{idx}(:,1),abs(zbest{idx}(:,2)),...
+        plot(zbest{idx}(:,1),zbest{idx}(:,2),...
             'color',0.8*cm(idx,:),...
             'marker','.',...
             'markersize',5);
@@ -667,7 +662,7 @@ function plotreim1(hObject, eventdata, handles)
         grid on;
         title('Imaginary');
         xlabel('Frequency [Hz]');
-        ylabel('Impedance imag [\Omega]');
+        ylabel('ABS(Impedance imag) [\Omega]');
     end
 
     set(ax(1),'FontSize',7);
@@ -712,7 +707,7 @@ function plotreim2(hObject, eventdata, handles)
         grid on;
         title('Imaginary');
         xlabel('Frequency [Hz]');
-        ylabel('Impedance imag [\Omega]');
+        ylabel('ABS(Impedance imag) [\Omega]');
     end
 
     set(ax(1),'FontSize',7);
